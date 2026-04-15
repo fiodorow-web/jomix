@@ -5,6 +5,8 @@ import { Heart, ChevronDown, Ruler, Truck, RotateCcw } from "lucide-react";
 import type { Product, SizeOption } from "@/data/types";
 import { cn } from "@/lib/cn";
 import { ProductGallery } from "./product-gallery";
+import { useCart } from "@/lib/cart-context";
+import { SizeGuideModal } from "./size-guide-modal";
 
 type Props = {
   product: Product;
@@ -15,6 +17,9 @@ export function ProductDetails({ product }: Props) {
   const [selectedSize, setSelectedSize] = useState<SizeOption | null>(null);
   const [isFav, setIsFav] = useState(false);
   const [expanded, setExpanded] = useState<string | null>("opis");
+  const [sizeError, setSizeError] = useState(false);
+  const [sizeGuideOpen, setSizeGuideOpen] = useState(false);
+  const { addItem } = useCart();
 
   const activeColor = product.colors[activeColorIdx];
   const onSale = product.compareAtPrice && product.compareAtPrice > product.price;
@@ -24,15 +29,33 @@ export function ProductDetails({ product }: Props) {
 
   const handleAddToCart = () => {
     if (!selectedSize) {
-      alert("Wybierz rozmiar");
+      setSizeError(true);
+      setTimeout(() => setSizeError(false), 2500);
       return;
     }
-    // TODO: integracja z Shopify Cart
-    alert(`Dodano: ${product.name} (${activeColor.name}, ${selectedSize})`);
+    addItem({
+      id: product.id,
+      slug: product.slug,
+      name: product.name,
+      price: product.price,
+      image: activeColor.images[0],
+      color: activeColor.name,
+      size: selectedSize,
+    });
   };
 
   return (
-    <div className="max-w-[1440px] mx-auto px-4 lg:px-8 pb-12 lg:pb-20">
+    <>
+      {product.sizeGuide && (
+        <SizeGuideModal
+          isOpen={sizeGuideOpen}
+          onClose={() => setSizeGuideOpen(false)}
+          sizeGuide={product.sizeGuide}
+          selectedSize={selectedSize}
+          productName={product.name}
+        />
+      )}
+      <div className="max-w-[1440px] mx-auto px-4 lg:px-8 pb-12 lg:pb-20">
       <div className="grid lg:grid-cols-[1.3fr_1fr] gap-6 lg:gap-12">
         {/* Gallery */}
         <div>
@@ -115,16 +138,25 @@ export function ProductDetails({ product }: Props) {
                     <span className="font-medium">: {selectedSize}</span>
                   )}
                 </div>
-                <button className="text-xs underline underline-offset-2 flex items-center gap-1 hover:text-accent">
-                  <Ruler className="w-3 h-3" />
-                  Tabela rozmiarów
-                </button>
+                {product.sizeGuide && (
+                  <button
+                    onClick={() => setSizeGuideOpen(true)}
+                    className="text-xs underline underline-offset-2 flex items-center gap-1 hover:text-accent transition-colors"
+                  >
+                    <Ruler className="w-3 h-3" />
+                    Tabela rozmiarów
+                  </button>
+                )}
               </div>
               <div className="grid grid-cols-6 gap-1.5">
                 {product.sizes.map(({ size, inStock }) => (
                   <button
                     key={size}
-                    onClick={() => inStock && setSelectedSize(size)}
+                    onClick={() => {
+                      if (!inStock) return;
+                      setSelectedSize(size);
+                      setSizeError(false);
+                    }}
                     disabled={!inStock}
                     className={cn(
                       "h-11 text-sm border transition-colors",
@@ -139,15 +171,25 @@ export function ProductDetails({ product }: Props) {
                   </button>
                 ))}
               </div>
+              {sizeError && (
+                <p className="mt-2 text-xs text-sale">
+                  Wybierz rozmiar przed dodaniem do koszyka
+                </p>
+              )}
             </div>
 
             {/* Add to cart */}
             <div className="flex gap-2 mb-6">
               <button
                 onClick={handleAddToCart}
-                className="flex-1 h-12 bg-foreground text-background text-sm tracking-wide font-medium hover:bg-accent transition-colors"
+                className={cn(
+                  "flex-1 h-12 text-background text-sm tracking-wide font-medium transition-colors",
+                  sizeError
+                    ? "bg-sale hover:bg-sale/90"
+                    : "bg-foreground hover:bg-accent"
+                )}
               >
-                Dodaj do koszyka
+                {sizeError ? "Wybierz rozmiar" : "Dodaj do koszyka"}
               </button>
               <button
                 onClick={() => setIsFav(!isFav)}
@@ -257,6 +299,7 @@ export function ProductDetails({ product }: Props) {
         </div>
       </div>
     </div>
+    </>
   );
 }
 

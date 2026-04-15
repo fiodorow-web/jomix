@@ -6,11 +6,15 @@ import { useState, useEffect } from "react";
 import { Heart, Search, ShoppingBag, Menu, X, ChevronRight, User } from "lucide-react";
 import { menuStructure } from "@/data/products";
 import { cn } from "@/lib/cn";
+import { useCart } from "@/lib/cart-context";
+import { SearchOverlay } from "./search-overlay";
 
 export function Header() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [openMegaMenu, setOpenMegaMenu] = useState<string | null>(null);
   const [expandedMobile, setExpandedMobile] = useState<string | null>(null);
+  const [searchOpen, setSearchOpen] = useState(false);
+  const { openCart, totalItems } = useCart();
 
   useEffect(() => {
     document.body.style.overflow = mobileOpen ? "hidden" : "";
@@ -21,6 +25,7 @@ export function Header() {
 
   return (
     <>
+      <SearchOverlay isOpen={searchOpen} onClose={() => setSearchOpen(false)} />
       {/* Announcement bar */}
       <div className="bg-foreground text-background text-xs tracking-wider">
         <div className="max-w-[1440px] mx-auto px-4 py-2 text-center">
@@ -76,7 +81,11 @@ export function Header() {
 
             {/* Right icons */}
             <div className="flex items-center gap-1 lg:gap-2">
-              <button className="p-2 hidden lg:inline-flex" aria-label="Szukaj">
+              <button
+                className="p-2 hidden lg:inline-flex"
+                aria-label="Szukaj"
+                onClick={() => setSearchOpen(true)}
+              >
                 <Search className="w-5 h-5" />
               </button>
               <button className="p-2 hidden lg:inline-flex" aria-label="Konto">
@@ -85,11 +94,17 @@ export function Header() {
               <button className="p-2" aria-label="Ulubione">
                 <Heart className="w-5 h-5" />
               </button>
-              <button className="p-2 -mr-2 relative" aria-label="Koszyk">
+              <button
+                className="p-2 -mr-2 relative"
+                aria-label="Koszyk"
+                onClick={openCart}
+              >
                 <ShoppingBag className="w-5 h-5" />
-                <span className="absolute top-1 right-1 bg-accent text-white text-[10px] rounded-full w-4 h-4 flex items-center justify-center">
-                  0
-                </span>
+                {totalItems > 0 && (
+                  <span className="absolute top-1 right-1 bg-accent text-white text-[10px] rounded-full w-4 h-4 flex items-center justify-center tabular-nums">
+                    {totalItems > 9 ? "9+" : totalItems}
+                  </span>
+                )}
               </button>
             </div>
           </div>

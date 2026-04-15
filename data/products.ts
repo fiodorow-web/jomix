@@ -1,4 +1,31 @@
-import type { Product, Category, SizeOption } from "./types";
+import type { Product, Category, SizeOption, SizeGuideRow } from "./types";
+
+const dressSizes: SizeGuideRow[] = [
+  { size: "XS", bust: "80–84", waist: "62–66", hips: "88–92" },
+  { size: "S",  bust: "84–88", waist: "66–70", hips: "92–96" },
+  { size: "M",  bust: "88–92", waist: "70–74", hips: "96–100" },
+  { size: "L",  bust: "92–96", waist: "74–78", hips: "100–104" },
+  { size: "XL", bust: "96–100", waist: "78–82", hips: "104–108" },
+  { size: "XXL", bust: "100–106", waist: "82–88", hips: "108–114" },
+];
+
+const topSizes: SizeGuideRow[] = [
+  { size: "XS", bust: "80–84", waist: "62–66", hips: "86–90" },
+  { size: "S",  bust: "84–88", waist: "66–70", hips: "90–94" },
+  { size: "M",  bust: "88–92", waist: "70–74", hips: "94–98" },
+  { size: "L",  bust: "92–96", waist: "74–78", hips: "98–102" },
+  { size: "XL", bust: "96–100", waist: "78–82", hips: "102–106" },
+  { size: "XXL", bust: "100–106", waist: "82–88", hips: "106–112" },
+];
+
+const bottomSizes: SizeGuideRow[] = [
+  { size: "XS", bust: "—", waist: "62–66", hips: "88–92" },
+  { size: "S",  bust: "—", waist: "66–70", hips: "92–96" },
+  { size: "M",  bust: "—", waist: "70–74", hips: "96–100" },
+  { size: "L",  bust: "—", waist: "74–78", hips: "100–104" },
+  { size: "XL", bust: "—", waist: "78–82", hips: "104–108" },
+  { size: "XXL", bust: "—", waist: "82–88", hips: "108–114" },
+];
 
 const img = (seed: string) => `https://picsum.photos/seed/${seed}/900/1200`;
 
@@ -40,6 +67,7 @@ export const products: Product[] = [
       "Nie suszyć w suszarce bębnowej",
     ],
     modelInfo: "Modelka ma 172 cm wzrostu, prezentuje rozmiar S",
+    sizeGuide: dressSizes,
     colors: [
       { name: "Beż", hex: "#d6c3a5", images: gallery("emma-bez") },
       { name: "Biały", hex: "#f5f1ea", images: gallery("emma-bialy") },
@@ -68,6 +96,7 @@ export const products: Product[] = [
     ],
     care: ["Prać w temperaturze 40°C", "Prasować w średniej temperaturze"],
     modelInfo: "Modelka ma 175 cm wzrostu, prezentuje rozmiar M",
+    sizeGuide: dressSizes,
     colors: [
       { name: "Czarny", hex: "#1a1a1a", images: gallery("doris-czarny") },
       { name: "Kremowy", hex: "#ede4d3", images: gallery("doris-kremowy") },
@@ -91,6 +120,7 @@ export const products: Product[] = [
       "Bawełna organiczna GOTS",
     ],
     care: ["Prać w temperaturze 30°C", "Można suszyć w suszarce"],
+    sizeGuide: topSizes,
     colors: [
       { name: "Biały", hex: "#ffffff", images: gallery("basic-bialy") },
       { name: "Czarny", hex: "#1a1a1a", images: gallery("basic-czarny") },
@@ -118,6 +148,7 @@ export const products: Product[] = [
     ],
     care: ["Prać w temperaturze 30°C", "Prasować w niskiej temperaturze"],
     modelInfo: "Modelka ma 172 cm wzrostu, prezentuje rozmiar S",
+    sizeGuide: dressSizes,
     colors: [
       { name: "Piaskowy", hex: "#c9b291", images: gallery("costa-piaskowy") },
       { name: "Oliwkowy", hex: "#6b7353", images: gallery("costa-oliwka") },
@@ -142,6 +173,7 @@ export const products: Product[] = [
       "Podszewka z wiskozy",
     ],
     care: ["Czyszczenie chemiczne", "Nie prać w pralce"],
+    sizeGuide: topSizes,
     colors: [
       { name: "Beż", hex: "#d6c3a5", images: gallery("iris-bez") },
       { name: "Czarny", hex: "#1a1a1a", images: gallery("iris-czarny") },
@@ -167,6 +199,7 @@ export const products: Product[] = [
       "Kieszenie boczne",
     ],
     care: ["Prać w temperaturze 30°C", "Można prasować mokre"],
+    sizeGuide: bottomSizes,
     colors: [
       { name: "Biały", hex: "#f5f1ea", images: gallery("nora-bialy") },
       { name: "Beż", hex: "#d6c3a5", images: gallery("nora-bez") },
@@ -190,6 +223,7 @@ export const products: Product[] = [
       "Wzór kwiatowy",
     ],
     care: ["Prać w temperaturze 30°C", "Prasować na odwrotnej stronie"],
+    sizeGuide: dressSizes,
     colors: [
       { name: "Kwiatowy", hex: "#e0a89d", images: gallery("molly-kwiat") },
       { name: "Błękitny", hex: "#a8bcc9", images: gallery("molly-blekit") },
@@ -215,6 +249,7 @@ export const products: Product[] = [
       "Ukryty suwak z boku",
     ],
     care: ["Prać w temperaturze 30°C"],
+    sizeGuide: bottomSizes,
     colors: [
       { name: "Czarny", hex: "#1a1a1a", images: gallery("lena-czarny") },
       { name: "Brąz", hex: "#8b6f4e", images: gallery("lena-braz") },

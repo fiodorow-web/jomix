@@ -6,6 +6,13 @@ export type ColorVariant = {
 
 export type SizeOption = "XS" | "S" | "M" | "L" | "XL" | "XXL";
 
+export type SizeGuideRow = {
+  size: SizeOption;
+  bust: string;   // obwód klatki
+  waist: string;  // obwód talii
+  hips: string;   // obwód bioder
+};
+
 export type Product = {
   id: string;
   slug: string;
@@ -22,6 +29,7 @@ export type Product = {
   details: string[];
   care: string[];
   modelInfo?: string;
+  sizeGuide?: SizeGuideRow[];
 };
 
 export type Category = {
