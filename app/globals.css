@@ -24,6 +24,12 @@
   --font-display: var(--font-inter);
 }
 
+/* Furgonetka map overlay — fix position:absolute → fixed */
+body > div[style*="position: absolute"][style*="inset: 0px"] {
+  position: fixed !important;
+  z-index: 99999 !important;
+}
+
 html {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;

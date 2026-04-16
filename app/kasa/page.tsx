@@ -2,10 +2,23 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowLeft, Lock, ChevronDown } from "lucide-react";
-import { useState } from "react";
+import { ArrowLeft, Lock, ChevronDown, MapPin } from "lucide-react";
+import { useState, useEffect } from "react";
 import { useCart } from "@/lib/cart-context";
 import { cn } from "@/lib/cn";
+
+declare global {
+  interface Window {
+    Furgonetka?: {
+      Map: new (options: {
+        apiKey: string;
+        courierServices?: string[];
+        env?: string;
+        callback: (params: { point: { code: string; name: string; type: string } }) => void;
+      }) => { show: () => void };
+    };
+  }
+}
 
 const DELIVERY_OPTIONS = [
   { id: "paczkomat", label: "Paczkomat InPost", desc: "2–3 dni robocze", price: 14.99 },
@@ -17,6 +30,42 @@ export default function CheckoutPage() {
   const { items, totalPrice } = useCart();
   const [delivery, setDelivery] = useState("paczkomat");
   const [orderSummaryOpen, setOrderSummaryOpen] = useState(false);
+  const [paczkomat, setPaczkomat] = useState<{ code: string; name: string } | null>(null);
+
+  // Load Furgonetka map script once
+  useEffect(() => {
+    if (document.querySelector('script[src*="furgonetka"]')) return;
+    const script = document.createElement("script");
+    script.src = "https://furgonetka.pl/js/dist/map/map.js";
+    script.async = true;
+    document.head.appendChild(script);
+  }, []);
+
+  function openPaczkomatMap() {
+    const apiKey = process.env.NEXT_PUBLIC_FURGONETKA_API_KEY ?? "";
+
+    const tryOpen = (attempts = 0) => {
+      if (window.Furgonetka) {
+        try {
+          new window.Furgonetka.Map({
+            apiKey,
+            courierServices: ["inpost"],
+            callback: (params) => {
+              setPaczkomat({ code: params.point.code, name: params.point.name });
+            },
+          }).show();
+        } catch (e) {
+          console.error("Furgonetka.Map error:", e);
+          alert("Błąd mapy: " + String(e));
+        }
+      } else if (attempts < 20) {
+        setTimeout(() => tryOpen(attempts + 1), 200);
+      } else {
+        alert("Nie udało się załadować mapy. Odśwież stronę i spróbuj ponownie.");
+      }
+    };
+    tryOpen();
+  }
 
   const deliveryOption = DELIVERY_OPTIONS.find((d) => d.id === delivery)!;
   const deliveryCost = totalPrice >= 299 ? 0 : deliveryOption.price;
@@ -131,7 +180,20 @@ export default function CheckoutPage() {
                     <input placeholder="Nazwisko" className={inputCls} />
                   </div>
                   {delivery === "paczkomat" ? (
-                    <input placeholder="Wybierz paczkomat..." className={inputCls} readOnly />
+                    <button
+                      type="button"
+                      onClick={openPaczkomatMap}
+                      className={cn(
+                        inputCls,
+                        "flex items-center gap-2 text-left",
+                        paczkomat ? "text-foreground" : "text-muted"
+                      )}
+                    >
+                      <MapPin className="w-4 h-4 flex-shrink-0 text-muted" />
+                      {paczkomat
+                        ? <span className="truncate">{paczkomat.name} <span className="text-muted text-xs">({paczkomat.code})</span></span>
+                        : "Wybierz paczkomat na mapie..."}
+                    </button>
                   ) : (
                     <>
                       <input placeholder="Ulica i numer" className={inputCls} />
