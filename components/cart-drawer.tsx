@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { X, Minus, Plus, ShoppingBag, ArrowRight } from "lucide-react";
 import { useCart } from "@/lib/cart-context";
 import { cn } from "@/lib/cn";
@@ -9,6 +10,7 @@ import { cn } from "@/lib/cn";
 export function CartDrawer() {
   const { items, isOpen, closeCart, removeItem, updateQuantity, totalItems, totalPrice } =
     useCart();
+  const router = useRouter();
 
   return (
     <>
@@ -185,7 +187,10 @@ export function CartDrawer() {
                 Dostawa i rabaty liczone w kasie
               </p>
 
-              <button className="w-full h-12 bg-foreground text-background text-sm font-medium tracking-wide hover:bg-accent transition-colors flex items-center justify-center gap-2">
+              <button
+                onClick={() => { closeCart(); router.push("/kasa"); }}
+                className="w-full h-12 bg-foreground text-background text-sm font-medium tracking-wide hover:bg-accent transition-colors flex items-center justify-center gap-2"
+              >
                 Przejdź do kasy
                 <ArrowRight className="w-4 h-4" />
               </button>

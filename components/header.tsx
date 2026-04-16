@@ -82,7 +82,7 @@ export function Header() {
             {/* Right icons */}
             <div className="flex items-center gap-1 lg:gap-2">
               <button
-                className="p-2 hidden lg:inline-flex"
+                className="p-2"
                 aria-label="Szukaj"
                 onClick={() => setSearchOpen(true)}
               >
@@ -91,7 +91,7 @@ export function Header() {
               <button className="p-2 hidden lg:inline-flex" aria-label="Konto">
                 <User className="w-5 h-5" />
               </button>
-              <button className="p-2" aria-label="Ulubione">
+              <button className="p-2 hidden lg:inline-flex" aria-label="Ulubione">
                 <Heart className="w-5 h-5" />
               </button>
               <button
