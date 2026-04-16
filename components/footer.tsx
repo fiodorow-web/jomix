@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { CookieSettingsButton } from "./cookie-settings-button";
 
 function InstagramIcon({ className }: { className?: string }) {
   return (
@@ -86,8 +87,8 @@ export function Footer() {
           <FooterCol
             title="Pomoc"
             links={[
-              { label: "Dostawa", href: "/dostawa" },
-              { label: "Zwroty i wymiany", href: "/zwroty" },
+              { label: "Dostawa i płatności", href: "/dostawa-i-platnosci" },
+              { label: "Zwroty i reklamacje", href: "/zwroty-i-reklamacje" },
               { label: "Tabela rozmiarów", href: "/tabela-rozmiarow" },
               { label: "FAQ", href: "/faq" },
               { label: "Kontakt", href: "/kontakt" },
@@ -98,10 +99,9 @@ export function Footer() {
             title="Jomix"
             links={[
               { label: "O nas", href: "/o-nas" },
-              { label: "Szyjemy w Polsce", href: "/produkcja" },
               { label: "Regulamin", href: "/regulamin" },
               { label: "Polityka prywatności", href: "/polityka-prywatnosci" },
-              { label: "Karta podarunkowa", href: "/karta-podarunkowa" },
+              { label: "Zarządzaj cookies", href: "#cookies", cookieSettings: true },
             ]}
           />
         </div>
@@ -126,20 +126,24 @@ function FooterCol({
   links,
 }: {
   title: string;
-  links: { label: string; href: string }[];
+  links: { label: string; href: string; cookieSettings?: boolean }[];
 }) {
   return (
     <div>
       <h4 className="text-xs tracking-[0.2em] uppercase mb-4">{title}</h4>
       <ul className="space-y-2.5">
         {links.map((link) => (
-          <li key={link.href}>
-            <Link
-              href={link.href}
-              className="text-sm text-white/70 hover:text-white transition-colors"
-            >
-              {link.label}
-            </Link>
+          <li key={link.label}>
+            {link.cookieSettings ? (
+              <CookieSettingsButton className="text-sm text-white/70 hover:text-white transition-colors" />
+            ) : (
+              <Link
+                href={link.href}
+                className="text-sm text-white/70 hover:text-white transition-colors"
+              >
+                {link.label}
+              </Link>
+            )}
           </li>
         ))}
       </ul>

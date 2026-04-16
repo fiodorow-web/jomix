@@ -42,8 +42,30 @@ export default async function ProductPage({
 
   const related = getRelatedProducts(product);
 
+  const productJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "Product",
+    name: product.name,
+    description: product.description,
+    brand: { "@type": "Brand", name: "Jomix" },
+    offers: {
+      "@type": "Offer",
+      priceCurrency: "PLN",
+      price: product.price.toFixed(2),
+      availability: "https://schema.org/InStock",
+      seller: { "@type": "Organization", name: "Jomix" },
+    },
+    ...(product.colors[0]?.images[0]
+      ? { image: product.colors[0].images[0] }
+      : {}),
+  };
+
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(productJsonLd) }}
+      />
       <Breadcrumbs
         items={[
           {

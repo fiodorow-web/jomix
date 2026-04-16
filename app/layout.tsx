@@ -24,6 +24,36 @@ export const metadata: Metadata = {
   },
 };
 
+const organizationJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  name: "Jomix",
+  url: "https://jomix.pl",
+  logo: "https://jomix.pl/logo.png",
+  contactPoint: {
+    "@type": "ContactPoint",
+    email: "kontakt@jomix.pl",
+    contactType: "customer service",
+    availableLanguage: "Polish",
+  },
+  sameAs: [
+    "https://www.instagram.com/jomix.pl",
+    "https://www.facebook.com/jomix.pl",
+  ],
+};
+
+const websiteJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  name: "Jomix",
+  url: "https://jomix.pl",
+  potentialAction: {
+    "@type": "SearchAction",
+    target: { "@type": "EntryPoint", urlTemplate: "https://jomix.pl/?q={search_term_string}" },
+    "query-input": "required name=search_term_string",
+  },
+};
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -32,6 +62,14 @@ export default function RootLayout({
   return (
     <html lang="pl" className={`${inter.variable} h-full antialiased`}>
       <body className="min-h-full flex flex-col bg-background text-foreground">
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationJsonLd) }}
+        />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteJsonLd) }}
+        />
         <Providers>
           <Header />
           <main className="flex-1">{children}</main>
